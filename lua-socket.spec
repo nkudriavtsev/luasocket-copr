@@ -4,7 +4,7 @@
 
 Name:           lua-socket
 Version:        2.0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
@@ -54,6 +54,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Sat Apr 05 2008 Tim Niemueller <tim@niemueller.de> - 2.0.2-2
 - Pass proper CFLAGS to produce valid debuginfo
 - Pass LICENSE file through iconv to produce proper UTF8
