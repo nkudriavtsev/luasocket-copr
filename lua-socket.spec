@@ -4,13 +4,14 @@
 
 Name:           lua-socket
 Version:        2.0.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
 Source0:        http://luaforge.net/frs/download.php/2664/luasocket-2.0.2.tar.gz
+Patch0:		lua-socket-unix-sockets.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  lua >= %{luaver}, lua-devel >= %{luaver}
@@ -28,7 +29,7 @@ and FTP. In addition there are modules for MIME, URL handling and LTN12.
 
 %prep
 %setup -q -n luasocket-%{version}
-
+%patch0 -p1 -b .unix
 
 %build
 make %{?_smp_mflags} CFLAGS="%{optflags} -fPIC"
@@ -54,6 +55,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 10 2011 Matthew Garrett <mjg@redhat.com> - 2.0.2-6
+- Build support for Unix domain sockets (rhbz: #720692)
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.2-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
