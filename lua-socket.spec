@@ -1,17 +1,20 @@
-%define luaver 5.1
+%define luaver 5.2
 %define lualibdir %{_libdir}/lua/%{luaver}
 %define luapkgdir %{_datadir}/lua/%{luaver}
+%global baseversion 2.0.2
 
 Name:           lua-socket
-Version:        2.0.2
-Release:        9%{?dist}
+Version:        2.1
+Release:        0.1.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
-Source0:        http://luaforge.net/frs/download.php/2664/luasocket-2.0.2.tar.gz
-Patch0:		lua-socket-unix-sockets.patch
+Source0:        http://luaforge.net/frs/download.php/2664/luasocket-%{baseversion}.tar.gz
+# from https://github.com/diegonehab/luasocket/
+Patch0:		luasocket-2.1rc1.patch
+Patch1:		luasocket-2.1-optflags.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  lua >= %{luaver}, lua-devel >= %{luaver}
@@ -28,18 +31,19 @@ Among the support modules, the most commonly used implement the SMTP, HTTP
 and FTP. In addition there are modules for MIME, URL handling and LTN12.
 
 %prep
-%setup -q -n luasocket-%{version}
-%patch0 -p1 -b .unix
+%setup -q -n luasocket-%{baseversion}
+%patch0 -p1 -b .21
+%patch1 -p1 -b .optflags
 
 %build
-make %{?_smp_mflags} CFLAGS="%{optflags} -fPIC"
+make %{?_smp_mflags} OPTFLAGS="%{optflags} -fPIC" linux
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install INSTALL_TOP_LIB=$RPM_BUILD_ROOT%{lualibdir} INSTALL_TOP_SHARE=$RPM_BUILD_ROOT%{luapkgdir}
+make install-unix INSTALL_TOP_LIB=$RPM_BUILD_ROOT%{lualibdir} INSTALL_TOP_SHARE=$RPM_BUILD_ROOT%{luapkgdir}
 
 
 %clean
@@ -55,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 10 2013 Tom Callaway <spot@fedoraproject.org> - 2.1-0.1.rc1
+- update to 2.1rc1 from git
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.2-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
