@@ -39,14 +39,14 @@ and FTP. In addition there are modules for MIME, URL handling and LTN12.
 %patch1 -p1 -b .noglobal
 
 %build
-make %{?_smp_mflags} OPTFLAGS="%{optflags} -fPIC"
+make %{?_smp_mflags} OPTFLAGS="%{optflags} -fPIC" linux
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install-unix INSTALL_TOP=$RPM_BUILD_ROOT INSTALL_TOP_CDIR=$RPM_BUILD_ROOT%{lualibdir} INSTALL_TOP_LDIR=$RPM_BUILD_ROOT%{luapkgdir}
+make install-unix OPTFLAGS="%{optflags}" INSTALL_TOP=$RPM_BUILD_ROOT INSTALL_TOP_CDIR=$RPM_BUILD_ROOT%{lualibdir} INSTALL_TOP_LDIR=$RPM_BUILD_ROOT%{luapkgdir}
 
 
 %clean
