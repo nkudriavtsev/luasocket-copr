@@ -1,20 +1,23 @@
 %define luaver 5.2
 %define lualibdir %{_libdir}/lua/%{luaver}
 %define luapkgdir %{_datadir}/lua/%{luaver}
-%global baseversion 2.0.2
+%global baseversion 3.0-rc1
+%global upstreamname luasocket
 
 Name:           lua-socket
-Version:        2.1
-Release:        0.2.rc1%{?dist}
+Version:        3.0
+Release:        0.3rc1%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
-Source0:        http://luaforge.net/frs/download.php/2664/luasocket-%{baseversion}.tar.gz
-# from https://github.com/diegonehab/luasocket/
-Patch0:		luasocket-2.1rc1.patch
-Patch1:		luasocket-2.1-optflags.patch
+#Source0:        http://luaforge.net/frs/download.php/2664/luasocket-%{baseversion}.tar.gz
+Source0:        https://github.com/diegonehab/%{upstreamname}/archive/v%{baseversion}.tar.gz
+Patch0:		    luasocket-optflags.patch
+# All changes in the upstream repo from %{baseversion} tag to the
+# current master. Seems to be harmless.
+Patch1:         luasocket-no-global-vars.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  lua >= %{luaver}, lua-devel >= %{luaver}
@@ -31,19 +34,19 @@ Among the support modules, the most commonly used implement the SMTP, HTTP
 and FTP. In addition there are modules for MIME, URL handling and LTN12.
 
 %prep
-%setup -q -n luasocket-%{baseversion}
-%patch0 -p1 -b .21
-%patch1 -p1 -b .optflags
+%setup -q -n %{upstreamname}-%{baseversion}
+%patch0 -p1 -b .optflags
+%patch1 -p1 -b .noglobal
 
 %build
-make %{?_smp_mflags} OPTFLAGS="%{optflags} -fPIC" linux
+make %{?_smp_mflags} OPTFLAGS="%{optflags} -fPIC"
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install-unix INSTALL_TOP_LIB=$RPM_BUILD_ROOT%{lualibdir} INSTALL_TOP_SHARE=$RPM_BUILD_ROOT%{luapkgdir}
+make install-unix INSTALL_TOP=$RPM_BUILD_ROOT INSTALL_TOP_CDIR=$RPM_BUILD_ROOT%{lualibdir} INSTALL_TOP_LDIR=$RPM_BUILD_ROOT%{luapkgdir}
 
 
 %clean
@@ -59,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 23 2013 Matěj Cepl <mcepl@redhat.com> - 3.0-0.3rc1
+- update to the 3.0rc1 from git
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.1-0.2.rc1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
@@ -74,7 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.2-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
-* Wed Oct 10 2011 Matthew Garrett <mjg@redhat.com> - 2.0.2-6
+* Mon Oct 10 2011 Matthew Garrett <mjg@redhat.com> - 2.0.2-6
 - Build support for Unix domain sockets (rhbz: #720692)
 
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.2-5
