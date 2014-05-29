@@ -4,6 +4,11 @@
 %define luaver 5.1
 %endif
 
+%define luacompatver 5.1
+%define luacompatlibdir %{_libdir}/lua/%{luacompatver}
+%define luacompatpkgdir %{_datadir}/lua/%{luacompatver}
+%define lua51dir %{_builddir}/lua51-%{name}-%{version}-%{release}
+
 %define lualibdir %{_libdir}/lua/%{luaver}
 %define luapkgdir %{_datadir}/lua/%{luaver}
 %global baseversion 3.0-rc1
@@ -11,7 +16,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.4rc1%{?dist}
+Release:        0.5rc1%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
@@ -28,6 +33,10 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  lua >= %{luaver}, lua-devel >= %{luaver}
 BuildRequires:  /usr/bin/iconv
 Requires:       lua >= %{luaver}
+
+%if 0%{?fedora} >= 20
+BuildRequires:  compat-lua >= %{luacompatver}, compat-lua-devel >= %{luacompatver}
+%endif
 
 %package devel
 Summary:    Development files for %{name}
@@ -48,17 +57,43 @@ and FTP. In addition there are modules for MIME, URL handling and LTN12.
 Header files and libraries for building an extension library for the
 Lua using %{name}
 
+%if 0%{?fedora} >= 20
+%package compat
+Summary:        Network support for the Lua language 5.1
+Group:          Development/Libraries
+
+%description compat
+LuaSocket is a Lua extension library that is composed by two parts: a C core
+that provides support for the TCP and UDP transport layers, and a set of Lua
+modules that add support for functionality commonly needed by applications
+that deal with the Internet.
+
+Among the support modules, the most commonly used implement the SMTP, HTTP
+and FTP. In addition there are modules for MIME, URL handling and LTN12.
+%endif
 
 %prep
 %setup -q -n %{upstreamname}-%{baseversion}
 %patch0 -p1 -b .optflags
 %patch1 -p1 -b .noglobal
 
+%if 0%{?fedora} >= 20
+rm -rf %{lua51dir}
+cp -a . %{lua51dir}
+%endif
+
 %build
-make %{?_smp_mflags} OPTFLAGS="%{optflags} -fPIC" linux
+make %{?_smp_mflags} LUAV=%{luaver} OPTFLAGS="%{optflags} -fPIC" linux
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
 
+%if 0%{?fedora} >= 20
+pushd %{lua51dir}
+make %{?_smp_mflags} LUAV=%{luacompatver} LUAINC_linux=%{_includedir}/lua-%{luacompatver} OPTFLAGS="%{optflags} -fPIC" linux
+/usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
+mv -f LICENSE.UTF8 LICENSE
+popd
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -70,6 +105,13 @@ make install-unix OPTFLAGS="%{optflags}" INSTALL_TOP=$RPM_BUILD_ROOT \
 install -d $RPM_BUILD_ROOT%{_includedir}/%{upstreamname}
 install -p src/*.h $RPM_BUILD_ROOT%{_includedir}/%{upstreamname}
 
+%if 0%{?fedora} >= 20
+pushd %{lua51dir}
+make install-unix OPTFLAGS="%{optflags}" INSTALL_TOP=$RPM_BUILD_ROOT \
+    INSTALL_TOP_CDIR=$RPM_BUILD_ROOT%{luacompatlibdir} \
+    INSTALL_TOP_LDIR=$RPM_BUILD_ROOT%{luacompatpkgdir}
+popd
+%endif
 
 %clean
 #rm -rf $RPM_BUILD_ROOT
@@ -86,8 +128,19 @@ install -p src/*.h $RPM_BUILD_ROOT%{_includedir}/%{upstreamname}
 %defattr(-,root,root,-)
 %{_includedir}/%{upstreamname}
 
+%if 0%{?fedora} >= 20
+%files compat
+%defattr(-,root,root,-)
+%doc doc/*
+%doc README LICENSE
+%{luacompatlibdir}/*
+%{luacompatpkgdir}/*
+%endif
 
 %changelog
+* Thu May 22 2014 Jan Kaluza <jkaluza@redhat.com> - 3.0-0.5rc1
+- build -compat subpackage against compat-lua
+
 * Mon Sep 09 2013 Matěj Cepl <mcepl@redhat.com> - 3.0-0.4rc1
 - Add -devel package.
 
