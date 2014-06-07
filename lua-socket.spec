@@ -16,7 +16,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.5rc1%{?dist}
+Release:        0.6rc1%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
@@ -138,6 +138,9 @@ popd
 %endif
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0-0.6rc1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Thu May 22 2014 Jan Kaluza <jkaluza@redhat.com> - 3.0-0.5rc1
 - build -compat subpackage against compat-lua
 
