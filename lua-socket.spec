@@ -1,7 +1,11 @@
+%if 0%{?fedora} >= 22
+%define luaver 5.3
+%else
 %if 0%{?fedora} >= 20 || 0%{?rhel} > 7
 %define luaver 5.2
 %else
 %define luaver 5.1
+%endif
 %endif
 
 %define luacompatver 5.1
@@ -16,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.7rc1%{?dist}
+Release:        0.8rc1%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
@@ -138,6 +142,9 @@ popd
 %endif
 
 %changelog
+* Fri Jan 16 2015 Tom Callaway <spot@fedoraproject.org> - 3.0-0.8rc1
+- lua 5.3
+
 * Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0-0.7rc1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
