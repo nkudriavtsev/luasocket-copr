@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.8rc1%{?dist}
+Release:        0.8rc1%{?dist}.1
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
@@ -142,6 +142,9 @@ popd
 %endif
 
 %changelog
+* Fri Mar 20 2015 Bastien Nocera <bnocera@redhat.com> 3.0-0.8rc1.1
+- Rebuild for new lua
+
 * Fri Jan 16 2015 Tom Callaway <spot@fedoraproject.org> - 3.0-0.8rc1
 - lua 5.3
 
