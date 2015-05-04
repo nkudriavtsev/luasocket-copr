@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.8rc1%{?dist}.1
+Release:        0.9.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
@@ -37,10 +37,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  lua >= %{luaver}, lua-devel >= %{luaver}
 BuildRequires:  /usr/bin/iconv
 Requires:       lua >= %{luaver}
-
-%if 0%{?fedora} >= 20
-BuildRequires:  compat-lua >= %{luacompatver}, compat-lua-devel >= %{luacompatver}
-%endif
 
 %package devel
 Summary:    Development files for %{name}
@@ -65,6 +61,7 @@ Lua using %{name}
 %package compat
 Summary:        Network support for the Lua language 5.1
 Group:          Development/Libraries
+BuildRequires:  compat-lua >= %{luacompatver}, compat-lua-devel >= %{luacompatver}
 
 %description compat
 LuaSocket is a Lua extension library that is composed by two parts: a C core
@@ -142,6 +139,9 @@ popd
 %endif
 
 %changelog
+* Mon May 04 2015 Robert Scheck <robert@fedoraproject.org> 3.0-0.9.rc1
+- Fix broken release tag
+
 * Fri Mar 20 2015 Bastien Nocera <bnocera@redhat.com> 3.0-0.8rc1.1
 - Rebuild for new lua
 
