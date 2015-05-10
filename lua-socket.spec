@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.9.rc1%{?dist}
+Release:        0.10.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
@@ -28,10 +28,11 @@ License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
 #Source0:        http://luaforge.net/frs/download.php/2664/luasocket-%{baseversion}.tar.gz
 Source0:        https://github.com/diegonehab/%{upstreamname}/archive/v%{baseversion}.tar.gz
-Patch0:		    luasocket-optflags.patch
+Patch0:         luasocket-optflags.patch
 # All changes in the upstream repo from %{baseversion} tag to the
 # current master. Seems to be harmless.
 Patch1:         luasocket-no-global-vars.patch
+Patch2:         luasocket-3.0-settimeout.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  lua >= %{luaver}, lua-devel >= %{luaver}
@@ -77,6 +78,7 @@ and FTP. In addition there are modules for MIME, URL handling and LTN12.
 %setup -q -n %{upstreamname}-%{baseversion}
 %patch0 -p1 -b .optflags
 %patch1 -p1 -b .noglobal
+%patch2 -p1 -b .settimeout
 
 %if 0%{?fedora} >= 20
 rm -rf %{lua51dir}
@@ -120,8 +122,9 @@ popd
 
 %files
 %defattr(-,root,root,-)
-%doc doc/*
-%doc README LICENSE
+%{!?_licensedir:%global license %%doc}
+%license LICENSE
+%doc README doc/*
 %{lualibdir}/*
 %{luapkgdir}/*
 
@@ -132,13 +135,17 @@ popd
 %if 0%{?fedora} >= 20
 %files compat
 %defattr(-,root,root,-)
-%doc doc/*
-%doc README LICENSE
+%{!?_licensedir:%global license %%doc}
+%license LICENSE
+%doc README doc/*
 %{luacompatlibdir}/*
 %{luacompatpkgdir}/*
 %endif
 
 %changelog
+* Sun May 10 2015 Robert Scheck <robert@fedoraproject.org> 3.0-0.10.rc1
+- Added upstream patch to fix settimeout() bug (#1220171)
+
 * Mon May 04 2015 Robert Scheck <robert@fedoraproject.org> 3.0-0.9.rc1
 - Fix broken release tag
 
