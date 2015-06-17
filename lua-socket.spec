@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.10.rc1%{?dist}
+Release:        0.11.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
@@ -143,6 +143,9 @@ popd
 %endif
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0-0.11.rc1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Sun May 10 2015 Robert Scheck <robert@fedoraproject.org> 3.0-0.10.rc1
 - Added upstream patch to fix settimeout() bug (#1220171)
 
