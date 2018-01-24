@@ -1,7 +1,7 @@
-%if 0%{?fedora} >= 22
+%if 0%{?fedora} >= 22 || 0%{?rhel} > 7
 %define luaver 5.3
 %else
-%if 0%{?fedora} >= 20 || 0%{?rhel} > 7
+%if 0%{?fedora} >= 20
 %define luaver 5.2
 %else
 %define luaver 5.1
