@@ -33,7 +33,6 @@ Patch0:         luasocket-optflags.patch
 # current master. Seems to be harmless.
 Patch1:         luasocket-no-global-vars.patch
 Patch2:         luasocket-3.0-settimeout.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  lua >= %{luaver}, lua-devel >= %{luaver}
 BuildRequires:  /usr/bin/iconv
