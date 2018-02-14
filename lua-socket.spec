@@ -115,9 +115,6 @@ make install-unix OPTFLAGS="%{optflags}" INSTALL_TOP=$RPM_BUILD_ROOT \
 popd
 %endif
 
-%clean
-#rm -rf $RPM_BUILD_ROOT
-
 
 %files
 %defattr(-,root,root,-)
