@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.16.rc1%{?dist}
+Release:        0.17.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
@@ -85,13 +85,17 @@ cp -a . %{lua51dir}
 %endif
 
 %build
-make %{?_smp_mflags} LUAV=%{luaver} OPTFLAGS="%{optflags} -fPIC" linux
+make %{?_smp_mflags} LUAV=%{luaver} OPTFLAGS="%{optflags} -fPIC" \
+     LDFLAGS="%{build_ldflags} -shared -o " linux
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
 
 %if 0%{?fedora} >= 20
 pushd %{lua51dir}
-make %{?_smp_mflags} LUAV=%{luacompatver} LUAINC_linux=%{_includedir}/lua-%{luacompatver} OPTFLAGS="%{optflags} -fPIC" linux
+make %{?_smp_mflags} LUAV=%{luacompatver} \
+    LUAINC_linux=%{_includedir}/lua-%{luacompatver} \
+    OPTFLAGS="%{optflags} -fPIC" \
+    LDFLAGS="%{build_ldflags} -O -shared -fpic -o " linux
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
 popd
@@ -139,6 +143,9 @@ popd
 %endif
 
 %changelog
+* Mon Apr 16 2018 Rafael dos Santos <rdossant@redhat.com> - 3.0-0.17.rc1
+- Use standard Fedora linker flags (bug #1548713)
+
 * Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.0-0.16.rc1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
