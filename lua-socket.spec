@@ -86,7 +86,7 @@ cp -a . %{lua51dir}
 
 %build
 make %{?_smp_mflags} LUAV=%{luaver} OPTFLAGS="%{optflags} -fPIC" \
-     LDFLAGS="%{build_ldflags} -shared -o " linux
+     LDFLAGS="%{?__global_ldflags} -shared -o " linux
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
 
@@ -95,7 +95,7 @@ pushd %{lua51dir}
 make %{?_smp_mflags} LUAV=%{luacompatver} \
     LUAINC_linux=%{_includedir}/lua-%{luacompatver} \
     OPTFLAGS="%{optflags} -fPIC" \
-    LDFLAGS="%{build_ldflags} -O -shared -fpic -o " linux
+    LDFLAGS="%{?__global_ldflags} -O -shared -fpic -o " linux
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
 popd
