@@ -121,7 +121,6 @@ popd
 
 
 %files
-%defattr(-,root,root,-)
 %{!?_licensedir:%global license %%doc}
 %license LICENSE
 %doc README doc/*
@@ -129,12 +128,10 @@ popd
 %{luapkgdir}/*
 
 %files devel
-%defattr(-,root,root,-)
 %{_includedir}/%{upstreamname}
 
 %if 0%{?fedora} >= 20
 %files compat
-%defattr(-,root,root,-)
 %{!?_licensedir:%global license %%doc}
 %license LICENSE
 %doc README doc/*
