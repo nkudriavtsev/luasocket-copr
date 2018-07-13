@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.17.rc1%{?dist}
+Release:        0.18.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 Group:          Development/Libraries
@@ -140,6 +140,9 @@ popd
 %endif
 
 %changelog
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.0-0.18.rc1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Mon Apr 16 2018 Rafael dos Santos <rdossant@redhat.com> - 3.0-0.17.rc1
 - Use standard Fedora linker flags (bug #1548713)
 
