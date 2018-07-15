@@ -34,6 +34,7 @@ Patch0:         luasocket-optflags.patch
 Patch1:         luasocket-no-global-vars.patch
 Patch2:         luasocket-3.0-settimeout.patch
 
+BuildRequires:  gcc
 BuildRequires:  lua >= %{luaver}, lua-devel >= %{luaver}
 BuildRequires:  /usr/bin/iconv
 Requires:       lua >= %{luaver}
