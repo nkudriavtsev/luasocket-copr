@@ -23,7 +23,6 @@ Version:        3.0
 Release:        0.18.rc1%{?dist}
 Summary:        Network support for the Lua language
 
-Group:          Development/Libraries
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
 #Source0:        http://luaforge.net/frs/download.php/2664/luasocket-%{baseversion}.tar.gz
@@ -41,7 +40,6 @@ Requires:       lua >= %{luaver}
 
 %package devel
 Summary:    Development files for %{name}
-Group:      Development/Languages
 Requires:   %{name}%{?_isa} = %{version}-%{release}
 
 
@@ -61,7 +59,6 @@ Lua using %{name}
 %if 0%{?fedora} >= 20
 %package compat
 Summary:        Network support for the Lua language 5.1
-Group:          Development/Libraries
 BuildRequires:  compat-lua >= %{luacompatver}, compat-lua-devel >= %{luacompatver}
 
 %description compat
