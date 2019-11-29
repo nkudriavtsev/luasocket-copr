@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.20.rc1%{?dist}
+Release:        0.21.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 License:        MIT
@@ -36,7 +36,7 @@ Patch2:         luasocket-3.0-settimeout.patch
 BuildRequires:  gcc
 BuildRequires:  lua >= %{luaver}, lua-devel >= %{luaver}
 BuildRequires:  /usr/bin/iconv
-Requires:       lua >= %{luaver}
+Requires:       lua(abi) >= %{luaver}
 
 %package devel
 Summary:    Development files for %{name}
@@ -60,6 +60,7 @@ Lua using %{name}
 %package compat
 Summary:        Network support for the Lua language 5.1
 BuildRequires:  compat-lua >= %{luacompatver}, compat-lua-devel >= %{luacompatver}
+Requires:       lua(abi) >= %{luacompatver}
 
 %description compat
 LuaSocket is a Lua extension library that is composed by two parts: a C core
@@ -138,6 +139,9 @@ popd
 %endif
 
 %changelog
+* Fri Nov 29 2019 Kalev Lember <klember@redhat.com> - 3.0-0.21.rc1
+- Require lua(abi) instead of just lua
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.0-0.20.rc1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
