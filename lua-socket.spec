@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.21.rc1%{?dist}
+Release:        0.22.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 License:        MIT
@@ -139,6 +139,9 @@ popd
 %endif
 
 %changelog
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.0-0.22.rc1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Fri Nov 29 2019 Kalev Lember <klember@redhat.com> - 3.0-0.21.rc1
 - Require lua(abi) instead of just lua
 
