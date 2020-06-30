@@ -1,5 +1,5 @@
 %if 0%{?fedora} >= 22 || 0%{?rhel} > 7
-%define luaver 5.3
+%define luaver 5.4
 %else
 %if 0%{?fedora} >= 20
 %define luaver 5.2
@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.22.rc1%{?dist}
+Release:        0.23.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 License:        MIT
@@ -139,6 +139,9 @@ popd
 %endif
 
 %changelog
+* Tue Jun 30 2020 Miro Hrončok <mhroncok@redhat.com> - 3.0-0.23.rc1
+- Rebuilt for Lua 5.4
+
 * Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.0-0.22.rc1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
