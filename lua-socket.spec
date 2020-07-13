@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.23.rc1%{?dist}
+Release:        0.24.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 License:        MIT
@@ -84,14 +84,14 @@ cp -a . %{lua51dir}
 %endif
 
 %build
-make %{?_smp_mflags} LUAV=%{luaver} OPTFLAGS="%{optflags} -fPIC" \
+%make_build LUAV=%{luaver} OPTFLAGS="%{optflags} -fPIC" \
      LDFLAGS="%{?__global_ldflags} -shared -o " linux
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
 
 %if 0%{?fedora} >= 20
 pushd %{lua51dir}
-make %{?_smp_mflags} LUAV=%{luacompatver} \
+%make_build LUAV=%{luacompatver} \
     LUAINC_linux=%{_includedir}/lua-%{luacompatver} \
     OPTFLAGS="%{optflags} -fPIC" \
     LDFLAGS="%{?__global_ldflags} -O -shared -fpic -o " linux
@@ -139,6 +139,10 @@ popd
 %endif
 
 %changelog
+* Mon Jul 13 2020 Tom Stellard <tstellar@redhat.com> - 3.0-0.24.rc1
+- Use make macros
+- https://fedoraproject.org/wiki/Changes/UseMakeBuildInstallMacro
+
 * Tue Jun 30 2020 Miro Hrončok <mhroncok@redhat.com> - 3.0-0.23.rc1
 - Rebuilt for Lua 5.4
 
