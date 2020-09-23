@@ -20,7 +20,7 @@
 
 Name:           lua-socket
 Version:        3.0
-Release:        0.25.rc1%{?dist}
+Release:        0.26.rc1%{?dist}
 Summary:        Network support for the Lua language
 
 License:        MIT
@@ -84,7 +84,10 @@ cp -a . %{lua51dir}
 %endif
 
 %build
-%make_build LUAV=%{luaver} OPTFLAGS="%{optflags} -fPIC" \
+# fix for:
+# /usr/lib64/lua/5.4/socket/core.so: undefined symbol: luaL_checkint
+# https://github.com/diegonehab/luasocket/issues/124#issuecomment-73561562
+%make_build LUAV=%{luaver} OPTFLAGS="%{optflags} -fPIC -DLUA_COMPAT_APIINTCASTS" \
      LDFLAGS="%{?__global_ldflags} -shared -o " linux
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
@@ -139,6 +142,10 @@ popd
 %endif
 
 %changelog
+* Wed Sep 23 2020 Bastien Nocera <bnocera@redhat.com> - 3.0-0.26.rc1
++ lua-socket-3.0-0.26.rc1
+- Fix for Lua >= 5.3
+
 * Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.0-0.25.rc1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
