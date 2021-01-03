@@ -152,7 +152,7 @@ lua-%{lua_compat_version} -e \
 - Renamed subpackage lua-socket-compat to lua5.1-socket (for Fedora)
 
 * Wed Sep 23 2020 Bastien Nocera <bnocera@redhat.com> - 3.0-0.26.rc1
-- Fix for Lua >= 5.3
+- Fix for Lua >= 5.3 (#1873634)
 
 * Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.0-0.25.rc1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
