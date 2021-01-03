@@ -1,150 +1,158 @@
-%if 0%{?fedora} >= 22 || 0%{?rhel} > 7
-%define luaver 5.4
-%else
-%if 0%{?fedora} >= 20
-%define luaver 5.2
-%else
-%define luaver 5.1
-%endif
-%endif
+%{!?lua_version: %global lua_version %{lua: print(string.sub(_VERSION, 5))}}
+%{!?lua_libdir: %global lua_libdir %{_libdir}/lua/%{lua_version}}
+%{!?lua_pkgdir: %global lua_pkgdir %{_datadir}/lua/%{lua_version}}
 
-%define luacompatver 5.1
-%define luacompatlibdir %{_libdir}/lua/%{luacompatver}
-%define luacompatpkgdir %{_datadir}/lua/%{luacompatver}
-%define lua51dir %{_builddir}/lua51-%{name}-%{version}-%{release}
+%{!?lua_compat_version: %global lua_compat_version 5.1}
+%{!?lua_compat_libdir: %global lua_compat_libdir %{_libdir}/lua/%{lua_compat_version}}
+%{!?lua_compat_pkgdir: %global lua_compat_pkgdir %{_datadir}/lua/%{lua_compat_version}}
+%{!?lua_compat_builddir: %global lua_compat_builddir %{_builddir}/compat-lua-%{name}-%{version}-%{release}}
 
-%define lualibdir %{_libdir}/lua/%{luaver}
-%define luapkgdir %{_datadir}/lua/%{luaver}
-%global baseversion 3.0-rc1
-%global upstreamname luasocket
-
+Summary:        Network support for the Lua language
 Name:           lua-socket
 Version:        3.0
-Release:        0.26.rc1%{?dist}
-Summary:        Network support for the Lua language
-
+Release:        0.27.rc1%{?dist}
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
-#Source0:        http://luaforge.net/frs/download.php/2664/luasocket-%{baseversion}.tar.gz
-Source0:        https://github.com/diegonehab/%{upstreamname}/archive/v%{baseversion}.tar.gz
+Source0:        https://github.com/diegonehab/luasocket/archive/v%{version}-rc1/luasocket-%{version}-rc1.tar.gz
 Patch0:         luasocket-optflags.patch
-# All changes in the upstream repo from %{baseversion} tag to the
-# current master. Seems to be harmless.
 Patch1:         luasocket-no-global-vars.patch
 Patch2:         luasocket-3.0-settimeout.patch
-
+Requires:       lua(abi) = %{lua_version}
 BuildRequires:  gcc
-BuildRequires:  lua >= %{luaver}, lua-devel >= %{luaver}
-BuildRequires:  /usr/bin/iconv
-Requires:       lua(abi) >= %{luaver}
-
-%package devel
-Summary:    Development files for %{name}
-Requires:   %{name}%{?_isa} = %{version}-%{release}
-
+BuildRequires:  make
+BuildRequires:  lua >= %{lua_version}
+BuildRequires:  lua-devel >= %{lua_version}
 
 %description
-LuaSocket is a Lua extension library that is composed by two parts: a C core
-that provides support for the TCP and UDP transport layers, and a set of Lua
-modules that add support for functionality commonly needed by applications
-that deal with the Internet.
+LuaSocket is a Lua extension library that is composed by two parts: The C
+core that provides support for the TCP and UDP transport layers, and the
+set of Lua modules that add support for functionality commonly needed by
+applications that deal with the Internet.
 
 Among the support modules, the most commonly used implement the SMTP, HTTP
 and FTP. In addition there are modules for MIME, URL handling and LTN12.
 
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
 %description devel
-Header files and libraries for building an extension library for the
-Lua using %{name}
+Header files necessary for developing and building an extension library
+for Lua using lua-socket.
 
-%if 0%{?fedora} >= 20
-%package compat
-Summary:        Network support for the Lua language 5.1
-BuildRequires:  compat-lua >= %{luacompatver}, compat-lua-devel >= %{luacompatver}
-Requires:       lua(abi) >= %{luacompatver}
+%if 0%{?fedora}
+%package -n lua%{lua_compat_version}-socket
+Summary:        Network support for the Lua %{lua_compat_version} language
+Obsoletes:      lua-socket-compat < 3.0-0.28.rc1
+Provides:       lua-socket-compat = %{version}-%{release}
+Provides:       lua-socket-compat%{?_isa} = %{version}-%{release}
+Requires:       lua(abi) = %{lua_compat_version}
+BuildRequires:  compat-lua >= %{lua_compat_version}
+BuildRequires:  compat-lua-devel >= %{lua_compat_version}
 
-%description compat
-LuaSocket is a Lua extension library that is composed by two parts: a C core
-that provides support for the TCP and UDP transport layers, and a set of Lua
-modules that add support for functionality commonly needed by applications
-that deal with the Internet.
+%description -n lua%{lua_compat_version}-socket
+LuaSocket is a Lua %{lua_compat_version} extension library that is composed by two parts: The
+C core that provides support for the TCP and UDP transport layers, and the
+set of Lua %{lua_compat_version} modules that add support for functionality commonly needed by
+applications that deal with the Internet.
 
 Among the support modules, the most commonly used implement the SMTP, HTTP
 and FTP. In addition there are modules for MIME, URL handling and LTN12.
 %endif
 
 %prep
-%setup -q -n %{upstreamname}-%{baseversion}
+%setup -q -n luasocket-%{version}-rc1
 %patch0 -p1 -b .optflags
 %patch1 -p1 -b .noglobal
 %patch2 -p1 -b .settimeout
 
-%if 0%{?fedora} >= 20
-rm -rf %{lua51dir}
-cp -a . %{lua51dir}
+%if 0%{?fedora}
+rm -rf %{lua_compat_builddir}
+cp -a . %{lua_compat_builddir}
 %endif
 
 %build
-# fix for:
-# /usr/lib64/lua/5.4/socket/core.so: undefined symbol: luaL_checkint
-# https://github.com/diegonehab/luasocket/issues/124#issuecomment-73561562
-%make_build LUAV=%{luaver} OPTFLAGS="%{optflags} -fPIC -DLUA_COMPAT_APIINTCASTS" \
-     LDFLAGS="%{?__global_ldflags} -shared -o " linux
-/usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
-mv -f LICENSE.UTF8 LICENSE
+%make_build linux \
+  LUAV=%{lua_version} \
+  LUAINC_linux=%{_includedir} \
+  OPTFLAGS="$RPM_OPT_FLAGS -fPIC -DLUA_COMPAT_APIINTCASTS" \
+  LDFLAGS="$RPM_LD_FLAGS -shared -o "
 
-%if 0%{?fedora} >= 20
-pushd %{lua51dir}
-%make_build LUAV=%{luacompatver} \
-    LUAINC_linux=%{_includedir}/lua-%{luacompatver} \
-    OPTFLAGS="%{optflags} -fPIC" \
-    LDFLAGS="%{?__global_ldflags} -O -shared -fpic -o " linux
-/usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
-mv -f LICENSE.UTF8 LICENSE
+%if 0%{?fedora}
+pushd %{lua_compat_builddir}
+%make_build linux \
+   LUAV=%{lua_compat_version} \
+   LUAINC_linux=%{_includedir}/lua-%{lua_compat_version} \
+   OPTFLAGS="$RPM_OPT_FLAGS -fPIC" \
+   LDFLAGS="$RPM_LD_FLAGS -shared -o "
 popd
 %endif
+
+# Convert charset of license file to UTF-8
+iconv -f ISO-8859-1 -t UTF-8 -o LICENSE.UTF-8 LICENSE
+touch -c -r LICENSE{,.UTF-8}
+mv -f LICENSE{.UTF-8,}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install-unix OPTFLAGS="%{optflags}" INSTALL_TOP=$RPM_BUILD_ROOT \
-    INSTALL_TOP_CDIR=$RPM_BUILD_ROOT%{lualibdir} \
-    INSTALL_TOP_LDIR=$RPM_BUILD_ROOT%{luapkgdir}
+make install-unix INSTALL_DATA='install -p -m 644' \
+  INSTALL_TOP=$RPM_BUILD_ROOT \
+  INSTALL_TOP_CDIR=$RPM_BUILD_ROOT%{lua_libdir} \
+  INSTALL_TOP_LDIR=$RPM_BUILD_ROOT%{lua_pkgdir}
 
-# install development files
-install -d $RPM_BUILD_ROOT%{_includedir}/%{upstreamname}
-install -p src/*.h $RPM_BUILD_ROOT%{_includedir}/%{upstreamname}
-
-%if 0%{?fedora} >= 20
-pushd %{lua51dir}
-make install-unix OPTFLAGS="%{optflags}" INSTALL_TOP=$RPM_BUILD_ROOT \
-    INSTALL_TOP_CDIR=$RPM_BUILD_ROOT%{luacompatlibdir} \
-    INSTALL_TOP_LDIR=$RPM_BUILD_ROOT%{luacompatpkgdir}
+%if 0%{?fedora}
+pushd %{lua_compat_builddir}
+make install-unix INSTALL_DATA='install -p -m 644' \
+  INSTALL_TOP=$RPM_BUILD_ROOT \
+  INSTALL_TOP_CDIR=$RPM_BUILD_ROOT%{lua_compat_libdir} \
+  INSTALL_TOP_LDIR=$RPM_BUILD_ROOT%{lua_compat_pkgdir}
 popd
 %endif
 
+# Install development headers
+mkdir -p $RPM_BUILD_ROOT%{_includedir}/luasocket/
+install -p -m 644 src/*.h $RPM_BUILD_ROOT%{_includedir}/luasocket/
+
+%check
+lua -e \
+  'package.cpath="%{buildroot}%{lua_libdir}/?.so;"..package.cpath;
+   package.path="%{buildroot}%{lua_pkgdir}/?.lua;"..package.path;
+   dofile("test/hello.lua");'
+
+%if 0%{?fedora}
+lua-%{lua_compat_version} -e \
+  'package.cpath="%{buildroot}%{lua_compat_libdir}/?.so;"..package.cpath;
+   package.path="%{buildroot}%{lua_compat_pkgdir}/?.lua;"..package.path;
+   dofile("test/hello.lua");'
+%endif
 
 %files
-%{!?_licensedir:%global license %%doc}
 %license LICENSE
-%doc README doc/*
-%{lualibdir}/*
-%{luapkgdir}/*
+%doc NEW README doc/*
+%{lua_libdir}/mime/
+%{lua_libdir}/socket/
+%{lua_pkgdir}/*.lua
+%{lua_pkgdir}/socket/
 
 %files devel
-%{_includedir}/%{upstreamname}
+%{_includedir}/luasocket/
 
-%if 0%{?fedora} >= 20
-%files compat
-%{!?_licensedir:%global license %%doc}
+%if 0%{?fedora}
+%files -n lua%{lua_compat_version}-socket
 %license LICENSE
-%doc README doc/*
-%{luacompatlibdir}/*
-%{luacompatpkgdir}/*
+%doc NEW README doc/*
+%{lua_compat_libdir}/mime/
+%{lua_compat_libdir}/socket/
+%{lua_compat_pkgdir}/*.lua
+%{lua_compat_pkgdir}/socket/
 %endif
 
 %changelog
+* Sun Jan 03 2021 Robert Scheck <robert@fedoraproject.org> 3.0-0.27.rc1
+- Spec file modernization with basic %%check for Lua module
+- Renamed subpackage lua-socket-compat to lua5.1-socket (for Fedora)
+
 * Wed Sep 23 2020 Bastien Nocera <bnocera@redhat.com> - 3.0-0.26.rc1
-+ lua-socket-3.0-0.26.rc1
-- Fix for Lua >= 5.3 (#1873634)
+- Fix for Lua >= 5.3
 
 * Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.0-0.25.rc1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
@@ -252,4 +260,3 @@ popd
 
 * Fri Apr 04 2008 Tim Niemueller <tim@niemueller.de> - 2.0.2-1
 - Initial package
-
