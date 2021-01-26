@@ -10,7 +10,7 @@
 Summary:        Network support for the Lua language
 Name:           lua-socket
 Version:        3.0
-Release:        0.27.rc1%{?dist}
+Release:        0.28.rc1%{?dist}
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
 Source0:        https://github.com/diegonehab/luasocket/archive/v%{version}-rc1/luasocket-%{version}-rc1.tar.gz
@@ -147,6 +147,9 @@ lua-%{lua_compat_version} -e \
 %endif
 
 %changelog
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 3.0-0.28.rc1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Sun Jan 03 2021 Robert Scheck <robert@fedoraproject.org> 3.0-0.27.rc1
 - Spec file modernization with basic %%check for Lua module
 - Renamed subpackage lua-socket-compat to lua5.1-socket (for Fedora)
