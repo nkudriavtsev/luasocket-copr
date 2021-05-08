@@ -12,8 +12,8 @@
 
 Summary:        Network support for the Lua language
 Name:           lua-socket
-Version:        3.0.%{shortcommit}
-Release:        1%{?dist}
+Version:        3.0
+Release:        %{shortcommit}.1%{?dist}
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
 Source0:        https://github.com/diegonehab/luasocket/archive/%{shortcommit}.tar.gz
