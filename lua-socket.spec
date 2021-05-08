@@ -7,16 +7,18 @@
 %{!?lua_compat_pkgdir: %global lua_compat_pkgdir %{_datadir}/lua/%{lua_compat_version}}
 %{!?lua_compat_builddir: %global lua_compat_builddir %{_builddir}/compat-lua-%{name}-%{version}-%{release}}
 
+%global commit 5b18e475f38fcf28429b1cc4b17baee3b9793a62
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
+
 Summary:        Network support for the Lua language
 Name:           lua-socket
-Version:        3.0
-Release:        0.28.rc1%{?dist}
+Version:        3.0.%{shortcommit}
+Release:        1%{?dist}
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
-Source0:        https://github.com/diegonehab/luasocket/archive/v%{version}-rc1/luasocket-%{version}-rc1.tar.gz
+Source0:        https://github.com/diegonehab/luasocket/archive/%{shortcommit}.tar.gz
 Patch0:         luasocket-optflags.patch
 Patch1:         luasocket-no-global-vars.patch
-Patch2:         luasocket-3.0-settimeout.patch
 Requires:       lua(abi) = %{lua_version}
 BuildRequires:  gcc
 BuildRequires:  make
@@ -61,10 +63,9 @@ and FTP. In addition there are modules for MIME, URL handling and LTN12.
 %endif
 
 %prep
-%setup -q -n luasocket-%{version}-rc1
+%setup -q -n luasocket-%{commit}
 %patch0 -p1 -b .optflags
 %patch1 -p1 -b .noglobal
-%patch2 -p1 -b .settimeout
 
 %if 0%{?fedora}
 rm -rf %{lua_compat_builddir}
@@ -147,6 +148,9 @@ lua-%{lua_compat_version} -e \
 %endif
 
 %changelog
+* Sat May 08 2021 NK - 3.0.5b18e47-1
+- Update to current git version to make compatible with lua 5.4.3
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 3.0-0.28.rc1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
