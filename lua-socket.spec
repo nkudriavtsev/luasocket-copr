@@ -63,7 +63,7 @@ and FTP. In addition there are modules for MIME, URL handling and LTN12.
 
 %prep
 %setup -q -n luasocket-%{commit}
-%dnl %patch0 -p1 -b .optflags
+%patch0 -p1 -b .optflags
 
 %if 0%{?fedora}
 rm -rf %{lua_compat_builddir}
