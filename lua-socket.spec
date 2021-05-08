@@ -17,7 +17,7 @@ Release:        %{shortcommit}.1%{?dist}
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
 Source0:        https://github.com/diegonehab/luasocket/archive/%{shortcommit}.tar.gz
-%dnl Patch0:         luasocket-optflags.patch
+Patch0:         luasocket-optflags.patch
 Requires:       lua(abi) = %{lua_version}
 BuildRequires:  gcc
 BuildRequires:  make
