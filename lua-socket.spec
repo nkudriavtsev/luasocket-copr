@@ -17,8 +17,7 @@ Release:        %{shortcommit}.1%{?dist}
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
 Source0:        https://github.com/diegonehab/luasocket/archive/%{shortcommit}.tar.gz
-Patch0:         luasocket-optflags.patch
-Patch1:         luasocket-no-global-vars.patch
+%dnl Patch0:         luasocket-optflags.patch
 Requires:       lua(abi) = %{lua_version}
 BuildRequires:  gcc
 BuildRequires:  make
@@ -65,7 +64,6 @@ and FTP. In addition there are modules for MIME, URL handling and LTN12.
 %prep
 %setup -q -n luasocket-%{commit}
 %dnl %patch0 -p1 -b .optflags
-%patch1 -p1 -b .noglobal
 
 %if 0%{?fedora}
 rm -rf %{lua_compat_builddir}
